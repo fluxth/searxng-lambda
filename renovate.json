@@ -5,5 +5,11 @@
   ],
   "git-submodules": {
     "enabled": true
-  }
+  },
+  "timezone": "Asia/Tokyo",
+  "schedule": [
+    "after 9pm every weekday",
+    "before 2am every weekday",
+    "every weekend"
+  ]
 }
