@@ -8,9 +8,8 @@ jobs:
     name: Build & Push Docker Image
     runs-on: ubuntu-latest
 
-    # permissions:
-    #   id-token: write
-    #   contents: read
+    permissions:
+      packages: write
 
     steps:
       - name: Checkout repository

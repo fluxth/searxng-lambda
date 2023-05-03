@@ -1,0 +1,39 @@
+name: PR Check
+on:
+  pull_request:
+
+jobs:
+  pr-check:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm64
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          platforms: linux/arm64
+
+      - name: Pin SearXNG version
+        run: cd searxng && python3 searx/version.py freeze
+
+      - name: Build & Push Docker Image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          tags: |
+            searxng-lambda:latest
+          provenance: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/arm64
+          push: false
