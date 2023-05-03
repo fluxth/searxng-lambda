@@ -6,6 +6,7 @@
   "git-submodules": {
     "enabled": true
   },
+  "reviewers": ["fluxth"],
   "timezone": "Asia/Tokyo",
   "schedule": [
     "after 9pm every weekday",
