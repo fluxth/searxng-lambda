@@ -26,7 +26,7 @@ jobs:
       - name: Pin SearXNG version
         run: cd searxng && python3 searx/version.py freeze
 
-      - name: Build & Push Docker Image
+      - name: Build Docker Image
         uses: docker/build-push-action@v4
         with:
           context: .
