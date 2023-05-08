@@ -4,7 +4,7 @@ on:
 
 jobs:
   pr-check:
-    name: Build Docker Image
+    name: Build & Test Docker Image
     runs-on: ubuntu-latest
 
     steps:
@@ -31,9 +31,29 @@ jobs:
         with:
           context: .
           tags: |
-            searxng-lambda:latest
+            searxng-lambda:local-latest
           provenance: false
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/arm64
           push: false
+          load: true
+
+      - name: Setup Node JS
+        uses: actions/setup-node@v3
+        with:
+          cache: npm
+          cache-dependency-path: tests/package-lock.json
+
+      - name: Start test containers
+        run: cd tests && docker-compose up -d
+
+      - name: Install NPM packages
+        run: cd tests && npm ci
+
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v5
+        with:
+          working-directory: tests
+          install: false
+          record: false
