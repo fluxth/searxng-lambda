@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  lambda-proxy:
+    image: bref/local-api-gateway:latest@sha256:f2b66dc81fc03c753949d9221e9cf1504bcd449a1f69e4bb9c6d452498b1e180
+    ports: 
+      - '8070:8000'
+    environment:
+      TARGET: 'app:8080'
+
+  app:
+    image: searxng-lambda:local-latest
+    environment:
+      SEARXNG_SECRET: 'testsecret'
+    ports:
+      - '8080:8080'
