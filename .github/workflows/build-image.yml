@@ -54,6 +54,7 @@ jobs:
           cache-to: type=gha,mode=max
           platforms: linux/arm64
           push: false
+          load: true
 
       - name: Setup Node JS
         uses: actions/setup-node@v3
