@@ -44,7 +44,36 @@ jobs:
           export SEARXNG_TAG=$(grep DOCKER_TAG searxng/searx/version_frozen.py | sed 's/^.*= "//' | sed 's/"$//')
           echo "DOCKER_TAG=v${SEARXNG_TAG}-${RUNTIME_TAG}" >> "$GITHUB_ENV"
 
-      - name: Build & Push Docker Image
+      - name: Build Docker Image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          tags: searxng-lambda:local-latest
+          provenance: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/arm64
+          push: false
+
+      - name: Setup Node JS
+        uses: actions/setup-node@v3
+        with:
+          cache: npm
+          cache-dependency-path: tests/package-lock.json
+
+      - name: Start test containers
+        run: cd tests && docker-compose up -d
+
+      - name: Install NPM packages
+        run: cd tests && npm ci
+
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v5
+        with:
+          working-directory: tests
+          install: false
+
+      - name: Push Docker Image
         uses: docker/build-push-action@v4
         with:
           context: .
