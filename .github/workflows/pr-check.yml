@@ -7,6 +7,9 @@ jobs:
     name: Build & Test Docker Image
     runs-on: ubuntu-latest
 
+    permissions:
+      pull-requests: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -25,6 +28,10 @@ jobs:
 
       - name: Pin SearXNG version
         run: cd searxng && python3 searx/version.py freeze
+
+      - name: Export version to environment
+        run: |
+          echo "DOCKER_TAG=$(./scripts/extract_version.sh)" >> "$GITHUB_ENV"
 
       - name: Build Docker Image
         uses: docker/build-push-action@v4
@@ -56,3 +63,29 @@ jobs:
         with:
           working-directory: tests
           install: false
+
+      - name: Hide old comments
+        uses: kanga333/comment-hider@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create a PR comment
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            let body = '## Docker Image Info\n'
+            body += 'When this PR gets merged, the Docker Image will have the following info:\n'
+            body += '- Tag: `${{ env.DOCKER_TAG }}`\n'
+
+            const util = require('node:util');
+            const execAsync = util.promisify(require('node:child_process').exec);
+            const subproc = await execAsync('docker images --no-trunc --quiet searxng-lambda:local-latest');
+
+            body += `- Hash: \`${subproc.stdout.trim()}\`\n`
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body
+            })
