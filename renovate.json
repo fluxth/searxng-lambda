@@ -13,5 +13,9 @@
     "after 9pm every weekday",
     "before 2am every weekday",
     "every weekend"
+  ],
+  "ignorePaths": [
+    "**/node_modules/**",
+    "searxng/**"
   ]
 }
