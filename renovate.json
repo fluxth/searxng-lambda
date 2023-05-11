@@ -17,5 +17,12 @@
   "ignorePaths": [
     "**/node_modules/**",
     "searxng/**"
+  ],
+  "packageRules": [
+    {
+      "matchManagers": ["docker-compose"],
+      "matchPackageNames": ["searxng-lambda"],
+      "enabled": false
+    }
   ]
 }
