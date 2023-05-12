@@ -53,7 +53,7 @@ jobs:
       - name: Export version to environment
         run: |
           echo "DOCKER_TAG=$(./scripts/version.py)" >> "$GITHUB_ENV"
-          if ! git diff --quiet HEAD^ HEAD version.json ; then
+          if ! git diff --quiet HEAD^ HEAD -- version.json ; then
             echo "VERSION_CHANGED=1" >> "$GITHUB_ENV"
           fi
 
