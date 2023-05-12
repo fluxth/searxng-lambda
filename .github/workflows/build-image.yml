@@ -38,10 +38,6 @@ jobs:
       - name: Pin SearXNG version
         run: cd searxng && python3 searx/version.py freeze
 
-      - name: Export version to environment
-        run: |
-          echo "DOCKER_TAG=$(./scripts/extract_version.sh)" >> "$GITHUB_ENV"
-
       - name: Build Docker Image
         uses: docker/build-push-action@v4
         with:
@@ -53,6 +49,13 @@ jobs:
           platforms: linux/arm64
           push: false
           load: true
+
+      - name: Export version to environment
+        run: |
+          echo "DOCKER_TAG=$(./scripts/version.py)" >> "$GITHUB_ENV"
+          if ! git diff --quiet HEAD^ HEAD version.json ; then
+            echo "VERSION_CHANGED=1" >> "$GITHUB_ENV"
+          fi
 
       - name: Setup Node JS
         uses: actions/setup-node@v3
@@ -74,6 +77,7 @@ jobs:
 
       - name: Push Docker Image
         uses: docker/build-push-action@v4
+        if: ${{ env.VERSION_CHANGED }}
         with:
           context: .
           tags: |
