@@ -9,7 +9,7 @@ RUN pip3 install -r requirements.txt --target "${LAMBDA_TASK_ROOT}" && \
 COPY searxng/searx ${LAMBDA_TASK_ROOT}/searx
 
 RUN cd ${LAMBDA_TASK_ROOT} && \
-    python3 -m compileall -q searx
+    python3 -m compileall searx main.py
 
 COPY settings.yml main.py ${LAMBDA_TASK_ROOT}
 
