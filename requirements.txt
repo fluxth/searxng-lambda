@@ -1,1 +1,1 @@
-apig-wsgi==2.15.0
+apig-wsgi==2.16.0
