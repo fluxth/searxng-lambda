@@ -1,4 +1,4 @@
-FROM public.ecr.aws/lambda/python:3.10.2023.05.07.17 AS build
+FROM public.ecr.aws/lambda/python:3.10.2023.05.07.17@sha256:df0f152ff8f15264bb729c6de2e1e7b7fe59042c419e12d1cbee2838299b2d6d AS build
 
 COPY searxng/requirements.txt .
 COPY requirements.txt ./requirements.lambda.txt
@@ -13,7 +13,7 @@ RUN cd ${LAMBDA_TASK_ROOT} && \
 
 COPY settings.yml main.py ${LAMBDA_TASK_ROOT}
 
-FROM public.ecr.aws/lambda/python:3.10.2023.05.07.17 AS runtime
+FROM public.ecr.aws/lambda/python:3.10.2023.05.07.17@sha256:df0f152ff8f15264bb729c6de2e1e7b7fe59042c419e12d1cbee2838299b2d6d AS runtime
 
 ENV INSTANCE_NAME=searxng \
     AUTOCOMPLETE= \
