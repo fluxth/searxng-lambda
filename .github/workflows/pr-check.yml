@@ -20,6 +20,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           submodules: true
+          token: ${{ secrets.CI_PAT }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -111,5 +112,5 @@ jobs:
         with:
           commit_message: Bump `version.json` for ${{ env.DOCKER_TAG }}
           file_pattern: version.json
-          commit_user_name: Automated FluxCI Bot
+          commit_user_name: FluxCI Bot
           commit_user_email: automated@flux.ci
