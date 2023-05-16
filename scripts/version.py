@@ -30,9 +30,6 @@ def extract_runtime_tag() -> str:
     docker_import_name = docker_import_parts[1]
     assert ":" in docker_import_name
 
-    if '@' in docker_import_name:
-        docker_import_name = docker_import_name.split('@')[0]
-
     return docker_import_name.rsplit(":", maxsplit=1)[-1]
 
 
