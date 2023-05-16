@@ -2,10 +2,6 @@ name: PR Check
 on:
   pull_request:
 
-concurrency:
-  group: pr-${{ github.event.number }}
-  cancel-in-progress: true
-
 jobs:
   pr-check:
     name: Build & Test Docker Image
@@ -13,7 +9,6 @@ jobs:
 
     permissions:
       pull-requests: write
-      contents: write
 
     steps:
       - name: Checkout repository
@@ -35,6 +30,10 @@ jobs:
       - name: Pin SearXNG version
         run: cd searxng && python3 searx/version.py freeze
 
+      - name: Export version to environment
+        run: |
+          echo "DOCKER_TAG=$(./scripts/extract_version.sh)" >> "$GITHUB_ENV"
+
       - name: Build Docker Image
         uses: docker/build-push-action@v4
         with:
@@ -47,14 +46,6 @@ jobs:
           platforms: linux/arm64
           push: false
           load: true
-
-      - name: Bump and export version to environment
-        run: |
-          echo "DOCKER_TAG=$(./scripts/version.py)" >> "$GITHUB_ENV"
-          if ! git diff --quiet version.json ; then
-            echo "VERSION_CHANGED=1" >> "$GITHUB_ENV"
-            git diff version.json > version_diff
-          fi
 
       - name: Setup Node JS
         uses: actions/setup-node@v3
@@ -76,37 +67,26 @@ jobs:
 
       - name: Hide old comments
         uses: kanga333/comment-hider@master
-        if: ${{ env.VERSION_CHANGED }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create a PR comment
         uses: actions/github-script@v6
-        if: ${{ env.VERSION_CHANGED }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const fs = require('fs');
-            const versionDiff = fs.readFileSync('./version_diff', 'utf8');
+            let body = '## Docker Image Info\n'
+            body += 'When this PR gets merged, the Docker Image will have the following info:\n'
+            body += '- Tag: `${{ env.DOCKER_TAG }}`\n'
 
-            let body = '## ⚠️ Image tag changed\n';
-            body += 'The Docker image will be tagged and pushed with the following contents when this PR is merged:\n\n';
-            body += '```diff\n';  
-            body += versionDiff;
-            body += '```';
+            const util = require('node:util');
+            const execAsync = util.promisify(require('node:child_process').exec);
+            const subproc = await execAsync('docker images --no-trunc --quiet searxng-lambda:local-latest');
 
+            body += `- Hash: \`${subproc.stdout.trim()}\`\n`
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
               body
             })
-
-      - name: Commit new version.json to PR
-        uses: stefanzweifel/git-auto-commit-action@v4
-        if: ${{ env.VERSION_CHANGED }}
-        with:
-          commit_message: Bump `version.json` for ${{ env.DOCKER_TAG }}
-          file_pattern: version.json
-          commit_user_name: FluxCI Bot
-          commit_user_email: automated@flux.ci
