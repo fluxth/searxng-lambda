@@ -1,6 +1,0 @@
-{
-    "docker_tag": "2023.5.10-cb1c374-3.10.2023.05.07.17",
-    "docker_hash": "sha256:1b23fd742ee242b2acd3a493a2e56293461886b4bdb8f40574a2e8a9c92407ff",
-    "revision": 2,
-    "version_string": "2023.5.10-cb1c374-3.10.2023.05.07.17-2-arm64"
-}
