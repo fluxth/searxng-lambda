@@ -1,4 +1,6 @@
-from apig_wsgi import make_lambda_handler
+from asgiref.wsgi import WsgiToAsgi
+from mangum import Mangum
 from searx.webapp import app
 
-lambda_handler = make_lambda_handler(app)
+asgi_app = WsgiToAsgi(app)
+lambda_handler = Mangum(asgi_app, lifespan="off")
