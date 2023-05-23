@@ -10,8 +10,8 @@
   "reviewers": ["fluxth"],
   "timezone": "Asia/Tokyo",
   "schedule": [
-    "after 9pm every weekday",
-    "before 2am every weekday",
+    "after 7pm every weekday",
+    "before 7am every weekday",
     "every weekend"
   ],
   "ignorePaths": [
