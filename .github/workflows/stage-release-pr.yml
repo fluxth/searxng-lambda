@@ -14,7 +14,7 @@ jobs:
 
       - name: Calculate staged release name
         run: |
-          echo "STAGE_RELEASE_ID=$(echo "${{ env.GITHUB_REF }}" | awk -F "-" '{print $NF}')" >> "$GITHUB_ENV"
+          echo "STAGE_RELEASE_ID=$(echo "${{ github.ref_name }}" | awk -F "-" '{print $NF}')" >> "$GITHUB_ENV"
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
