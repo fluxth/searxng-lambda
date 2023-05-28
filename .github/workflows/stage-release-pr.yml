@@ -25,3 +25,4 @@ jobs:
           body: |
             - Start new staged release with ID: ${{ env.STAGE_RELEASE_ID }}
           branch: stage-release-${{ env.STAGE_RELEASE_ID }}
+          base: main
