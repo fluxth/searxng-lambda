@@ -1,0 +1,27 @@
+name: Stage a new release
+on:
+  workflow_dispatch:
+
+jobs:
+  stage-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout default branch
+        uses: actions/checkout@v3
+
+      - name: Calculate staged release name
+        run: |
+          TZ=Etc/UTC date +%Y%m%d%H%M >> "$GITHUB_ENV"
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          committer: FluxCI Bot <automated@flux.ci>
+          commit-message: 'Stage Release ${{ env.STAGE_RELEASE_ID }}'
+          title: 'Stage Release ${{ env.STAGE_RELEASE_ID }}'
+          body: |
+            - Start new staged release with ID: ${{ env.STAGE_RELEASE_ID }}
+          branch: stage-release-${{ env.STAGE_RELEASE_ID }}
