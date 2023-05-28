@@ -1,4 +1,4 @@
-name: Stage a new release
+name: Create a new staged release branch
 on:
   workflow_dispatch:
 
@@ -7,14 +7,18 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      pull-requests: write
     steps:
       - name: Checkout default branch
         uses: actions/checkout@v3
+        with:
+          ref: main
 
       - name: Calculate staged release name
         run: |
           echo "STAGE_RELEASE_ID=$(TZ=Etc/UTC date +%Y%m%d%H%M)" >> "$GITHUB_ENV"
+
+      - name: Create a new staged release branch
+        run: git push origin HEAD:stage-release-${{ env.STAGE_RELEASE_ID }}
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
