@@ -1,4 +1,4 @@
-FROM public.ecr.aws/lambda/python:3.11-preview.2023.05.29.18-arm64 AS build
+FROM public.ecr.aws/lambda/python:3.11-preview.2023.05.29.18-arm64@sha256:595a04292297a9c2846ad23084dc847ac8624691474e40b227d2586fb3270e40 AS build
 
 WORKDIR /tmp/workdir
 
@@ -21,7 +21,7 @@ RUN cd ${LAMBDA_TASK_ROOT} && \
 
 COPY settings.yml main.py ${LAMBDA_TASK_ROOT}
 
-FROM public.ecr.aws/lambda/python:3.11-preview.2023.05.29.18-arm64 AS runtime
+FROM public.ecr.aws/lambda/python:3.11-preview.2023.05.29.18-arm64@sha256:595a04292297a9c2846ad23084dc847ac8624691474e40b227d2586fb3270e40 AS runtime
 
 ENV INSTANCE_NAME=searxng \
     AUTOCOMPLETE= \
