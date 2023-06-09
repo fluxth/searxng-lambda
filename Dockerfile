@@ -1,19 +1,27 @@
-FROM public.ecr.aws/lambda/python:3.10.2023.05.29.18-arm64@sha256:9d98ebbf0990bcef500678e02b8de7e50b3a75852d19d91042eeda6cbd514d57 AS build
+FROM public.ecr.aws/lambda/python:3.11-preview.2023.05.29.18-arm64 AS build
+
+WORKDIR /tmp/workdir
+
+RUN yum install -y patch
 
 COPY searxng/requirements.txt .
 COPY requirements.txt ./requirements.lambda.txt
+
+RUN sed -i 's/pytomlpp.*//' requirements.txt
 
 RUN pip3 install -r requirements.txt --target "${LAMBDA_TASK_ROOT}" && \
     pip3 install -r requirements.lambda.txt --target "${LAMBDA_TASK_ROOT}"
 
 COPY searxng/searx ${LAMBDA_TASK_ROOT}/searx
+COPY patches patches
 
 RUN cd ${LAMBDA_TASK_ROOT} && \
+    cat /tmp/workdir/patches/*.patch | patch -p1 && \
     python3 -m compileall searx main.py
 
 COPY settings.yml main.py ${LAMBDA_TASK_ROOT}
 
-FROM public.ecr.aws/lambda/python:3.10.2023.05.29.18-arm64@sha256:9d98ebbf0990bcef500678e02b8de7e50b3a75852d19d91042eeda6cbd514d57 AS runtime
+FROM public.ecr.aws/lambda/python:3.11-preview.2023.05.29.18-arm64 AS runtime
 
 ENV INSTANCE_NAME=searxng \
     AUTOCOMPLETE= \

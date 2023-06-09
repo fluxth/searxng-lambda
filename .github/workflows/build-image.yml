@@ -73,14 +73,8 @@ jobs:
           install: false
 
       - name: Push Docker Image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          tags: |
-            ghcr.io/${{ github.repository_owner }}/searxng-lambda:latest
-            ghcr.io/${{ github.repository_owner }}/searxng-lambda:${{ env.DOCKER_TAG }}
-          provenance: false
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          platforms: linux/arm64
-          push: true
+        run: |
+          docker tag searxng-lambda:local-latest ghcr.io/${{ github.repository_owner }}/searxng-lambda:latest
+          docker tag searxng-lambda:local-latest ghcr.io/${{ github.repository_owner }}/searxng-lambda:${{ env.DOCKER_TAG }}
+          docker push ghcr.io/${{ github.repository_owner }}/searxng-lambda:latest
+          docker push ghcr.io/${{ github.repository_owner }}/searxng-lambda:${{ env.DOCKER_TAG }}
