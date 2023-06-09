@@ -1,0 +1,33 @@
+diff --git a/searx/tools/config.py b/searx/tools/config.py
+index d2710456..65998083 100644
+--- a/searx/tools/config.py
++++ b/searx/tools/config.py
+@@ -14,7 +14,7 @@ import copy
+ import typing
+ import logging
+ import pathlib
+-import pytomlpp as toml
++import tomllib as toml
+ 
+ __all__ = ['Config', 'UNSET', 'SchemaIssue']
+ 
+@@ -62,7 +62,7 @@ class Config:
+         # init schema
+ 
+         log.debug("load schema file: %s", schema_file)
+-        cfg = cls(cfg_schema=toml.load(schema_file), deprecated=deprecated)
++        cfg = cls(cfg_schema=toml.loads(open(schema_file).read()), deprecated=deprecated)
+         if not cfg_file.exists():
+             log.warning("missing config file: %s", cfg_file)
+             return cfg
+@@ -71,8 +71,8 @@ class Config:
+ 
+         log.debug("load config file: %s", cfg_file)
+         try:
+-            upd_cfg = toml.load(cfg_file)
+-        except toml.DecodeError as exc:
++            upd_cfg = toml.loads(open(cfg_file).read())
++        except toml.TOMLDecodeError as exc:
+             msg = str(exc).replace('\t', '').replace('\n', ' ')
+             log.error("%s: %s", cfg_file, msg)
+             raise
