@@ -27,7 +27,7 @@
     {
       "matchFiles": ["Dockerfile"],
       "matchPackageNames": ["public.ecr.aws/lambda/python"],
-      "versioning": "loose"
+      "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)(?:-(?<prerelease>preview))?\\.(?<build>[\\w.]+)(?:-(?<compatibility>\\w+))?$"
     }
   ]
 }
