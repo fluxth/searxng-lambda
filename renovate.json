@@ -23,6 +23,11 @@
       "matchManagers": ["docker-compose"],
       "matchPackageNames": ["searxng-lambda"],
       "enabled": false
+    },
+    {
+      "matchFiles": ["Dockerfile"],
+      "matchPackageNames": ["public.ecr.aws/lambda/python"],
+      "versioning": "loose"
     }
   ]
 }
