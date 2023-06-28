@@ -1,4 +1,4 @@
-FROM public.ecr.aws/lambda/python:3.11-preview.2023.06.27.19-arm64@sha256:23c816fb2ed79e356b5a54ff17894de250250e255ac0ec2f00f5d5dc0c49366f AS base
+FROM public.ecr.aws/lambda/python:3.11-preview.2023.06.28.13-arm64@sha256:7bf3575463718922eefb93ea061a9ff33e198cca4ff77fa43eddb447f00cdf98 AS base
 
 FROM base AS build
 
