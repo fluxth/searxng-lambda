@@ -46,10 +46,10 @@ jobs:
         run: |
           cd .github
           cat - RELEASE_NOTES.md << "EOF" > RELEASE_BODY.md
-          ## Component Versions
+          ## Summary
 
-          | Name | Version |
-          | --- | --- |
+          | Component | Version |
+          | :--- | :--- |
           | `${{ env.SEARXNG_LAMBDA_APP_IMAGE }}` | `${{ env.SEARXNG_LAMBDA_APP_VERSION }}` |
           | `${{ env.SEARXNG_LAMBDA_RUNTIME_IMAGE }}` | `${{ env.SEARXNG_LAMBDA_RUNTIME_TAG }}` |
 
