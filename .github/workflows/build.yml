@@ -1,11 +1,13 @@
-name: Push to main
+name: Build & Test Docker Image
 on:
+  pull_request:
   push:
     branches: main
 
 jobs:
   draft-release:
     name: Draft next release
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     concurrency:
       group: release-draft
