@@ -4,57 +4,66 @@ on:
     branches: main
 
 jobs:
-  runs-on: ubuntu-latest
-  concurrency:
-    group: release-draft
+  draft-release:
+    name: Draft next release
+    runs-on: ubuntu-latest
+    concurrency:
+      group: release-draft
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+        with:
+          submodules: true
+          fetch-depth: 0
 
-  steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+      - name: Pin SearXNG version
+        run: cd searxng && python3 searx/version.py freeze
 
-    - name: Set version environment variables
-      run: |
-        python3 scripts/version.py --bump patch >> "$GITHUB_ENV"
+      - name: Set version environment variables
+        run: python3 scripts/version.py --bump patch >> "$GITHUB_ENV"
 
-    - name: Generate release notes
-      uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410 # v6.4.1
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const fs = require("fs");
+      - name: Generate release notes
+        uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410 # v6.4.1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require("fs");
 
-          const { data } = await github.rest.repos.generateReleaseNotes({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            tag_name: "${{ env.SEARXNG_LAMBDA_NEXT_VERSION }}",
-            target_commitish: "${{ github.sha }}",
-          });
+            const { data } = await github.rest.repos.generateReleaseNotes({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: "${{ env.SEARXNG_LAMBDA_NEXT_VERSION }}",
+              target_commitish: "${{ github.sha }}",
+            });
 
-          const { body: releaseNotes } = data;
-          fs.writeFileSync(".github/RELEASE_NOTES.md", releaseNotes + "\n");
+            const { body: releaseNotes } = data;
+            fs.writeFileSync(".github/RELEASE_NOTES.md", releaseNotes + "\n");
 
 
-    - name: Build release body
-      run: |
-        cd .github
-        cat - RELEASE_NOTES.md << "EOF" > RELEASE_BODY.md
-        ## Component Versions
+      - name: Build release body
+        run: |
+          cd .github
+          cat - RELEASE_NOTES.md << "EOF" > RELEASE_BODY.md
+          ## Component Versions
 
-        | Name | Version |
-        | --- | --- |
-        | `${{ env.SEARXNG_LAMBDA_APP_IMAGE }}` | `${{ env.SEARXNG_LAMBDA_APP_VERSION }}` |
-        | `${{ env.SEARXNG_LAMBDA_RUNTIME_IMAGE }}` | `${{ env.SEARXNG_LAMBDA_RUNTIME_TAG }}` |
+          | Name | Version |
+          | --- | --- |
+          | `${{ env.SEARXNG_LAMBDA_APP_IMAGE }}` | `${{ env.SEARXNG_LAMBDA_APP_VERSION }}` |
+          | `${{ env.SEARXNG_LAMBDA_RUNTIME_IMAGE }}` | `${{ env.SEARXNG_LAMBDA_RUNTIME_TAG }}` |
 
-        EOF
+          EOF
 
-    - name: Create or update release draft
-      uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410 # v6.4.1
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const script = require('./.github/workflows/scripts/create-update-release-draft.js');
-          const inputs = {
-            nextVersion: "${{ env.SEARXNG_LAMBDA_NEXT_VERSION }}",
-            sha: "${{ github.sha }}",
-          };
+      - name: Create or update release draft
+        uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410 # v6.4.1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const script = require('./.github/workflows/scripts/create-update-release-draft.js');
+            const inputs = {
+              nextVersion: "${{ env.SEARXNG_LAMBDA_NEXT_VERSION }}",
+              sha: "${{ github.sha }}",
+            };
 
-          return await script({ github, context, inputs });
+            return await script({ github, context, inputs });
