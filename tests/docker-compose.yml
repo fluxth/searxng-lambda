@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   lambda-proxy:
-    image: bref/local-api-gateway:latest@sha256:a46c67fc82913fea25beadbf1d8ac28ccf298280560e0b16fe2e11f7266eafc5
+    image: bref/local-api-gateway:latest@sha256:cc7aa9db9bc4dfd55b816b6c27b0672d5f111200e16f407dd9061765b49110fd
     ports: 
       - '8070:8000'
     environment:
