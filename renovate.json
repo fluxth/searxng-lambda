@@ -3,10 +3,13 @@
   "extends": [
     "config:base",
     "docker:pinDigests",
-    ":maintainLockFilesMonthly"
+    ":maintainLockFilesMonthly",
+    ":pinVersions"
   ],
-  "pinVersions": true,
   "git-submodules": {
+    "enabled": true
+  },
+  "pre-commit": {
     "enabled": true
   },
   "reviewers": ["fluxth"],
