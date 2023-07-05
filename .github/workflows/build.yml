@@ -122,3 +122,13 @@ jobs:
         with:
           working-directory: tests
           install: false
+
+  lint:
+    name: Run linters
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Lint with pre-commit
+        uses: pre-commit/action@646c83fcd040023954eafda54b4db0192ce70507 # v3.0.0
