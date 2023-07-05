@@ -7,4 +7,3 @@ describe("basic sanity checks", () => {
     cy.visit("/");
   });
 });
-
