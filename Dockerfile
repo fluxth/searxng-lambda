@@ -1,4 +1,4 @@
-FROM public.ecr.aws/lambda/python:3.11-preview.2023.07.05.09@sha256:3bc3055de9581a2572e943653a43d5388ba1c85a12c692e5f2b8da7d661d5ca4 AS base
+FROM public.ecr.aws/lambda/python:3.11-preview.2023.07.07.10@sha256:ba437f58fb71e04a945df577264d36c8ec7f065eebd59b1718e658a92ae9d665 AS base
 
 FROM base AS build
 WORKDIR /tmp/workdir
