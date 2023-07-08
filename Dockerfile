@@ -1,9 +1,13 @@
 FROM public.ecr.aws/lambda/python:3.11-preview.2023.07.07.10@sha256:ba437f58fb71e04a945df577264d36c8ec7f065eebd59b1718e658a92ae9d665 AS base
 
+RUN yum install -y libxml2 libxslt && \
+    yum clean all && \
+    rm -rf /var/cache/yum
+
 FROM base AS build
 WORKDIR /tmp/workdir
 
-RUN yum install -y patch
+RUN yum install -y gcc libxml2-devel libxslt-devel patch
 
 COPY searxng/requirements.txt .
 COPY requirements.txt ./requirements.lambda.txt
