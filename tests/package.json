@@ -10,6 +10,6 @@
   "author": "Thitat Auareesuksakul <thitat@flux.ci>",
   "license": "MIT",
   "devDependencies": {
-    "cypress": "12.17.0"
+    "cypress": "12.17.1"
   }
 }
