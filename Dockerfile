@@ -1,4 +1,4 @@
-FROM public.ecr.aws/lambda/python:3.11-preview.2023.07.12.05@sha256:bf635ff7c778dbd9689e69d477c863d1bbef7ff0e896666203ae94eeba7ade73 AS base
+FROM public.ecr.aws/lambda/python:3.11-preview.2023.07.13.01@sha256:0a8cbf70753741b07b500c36cbe460c02222b06e0f7a50b76865e93a832b578b AS base
 
 RUN yum install -y libxml2 libxslt && \
     yum clean all && \
