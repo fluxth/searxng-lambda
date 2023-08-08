@@ -12,7 +12,8 @@ RUN yum install -y gcc libxml2-devel libxslt-devel patch
 COPY searxng/requirements.txt .
 COPY requirements.txt ./requirements.lambda.txt
 
-RUN sed -i 's/pytomlpp.*//' requirements.txt
+RUN echo >> requirements.txt && \
+    sed -i 's/pytomlpp.*//' requirements.txt
 
 RUN cat requirements.txt requirements.lambda.txt > requirements.all.txt && \
     pip3 install -r requirements.all.txt --target "${LAMBDA_TASK_ROOT}"
