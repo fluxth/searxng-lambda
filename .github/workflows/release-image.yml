@@ -16,7 +16,7 @@ jobs:
       SEARXNG_LAMBDA_THIS_RELEASE_TAG: ${{ github.event.release.tag_name }}-arm64
     steps:
       - name: Checkout repository
-        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
         with:
           submodules: true
           fetch-depth: 0
