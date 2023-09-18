@@ -18,6 +18,6 @@ repos:
         args: ['-x']
 
   - repo: https://github.com/rhysd/actionlint
-    rev: v1.6.25
+    rev: v1.6.26
     hooks:
       - id: actionlint-docker
