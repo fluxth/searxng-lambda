@@ -27,9 +27,18 @@
   ],
   "packageRules": [
     {
+      "description": "Disable updates to self-built searxng-lambda in docker-compose",
       "matchManagers": ["docker-compose"],
       "matchPackageNames": ["searxng-lambda"],
       "enabled": false
+    },
+    {
+      "description": "Auto-merge GitHub Actions patch and digest updates",
+      "matchUpdateTypes": ["patch", "digest"],
+      "matchManagers": ["github-actions"],
+      "schedule": ["before 6am"],
+      "automerge": true,
+      "automergeType": "pr"
     }
   ]
 }
