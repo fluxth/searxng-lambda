@@ -55,7 +55,7 @@ jobs:
         run: cd tests && npm ci
 
       - name: Run Cypress tests
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@59810ebfa5a5ac6fcfdcfdf036d1cd4d083a88f2 # v6.5.0
         with:
           working-directory: tests
           install: false
