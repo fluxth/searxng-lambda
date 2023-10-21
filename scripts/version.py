@@ -29,25 +29,24 @@ def exec(*args, **kwargs) -> str:
     ).stdout.rstrip("\n")
 
 
-def extract_runtime_tag() -> tuple[str, str]:
+def extract_docker_tag(search_str: str) -> tuple[str, str]:
     with open(PROJECT_ROOT / "Dockerfile", "r") as f:
         for line in f.read().splitlines():
-            if "lambda/python" in line:
-                image = [part for part in line.split() if "lambda/python" in part][0]
+            if search_str in line:
+                image = [part for part in line.split() if search_str in part][0]
                 tag = image.split("@")[0].rsplit(":", maxsplit=1)
 
                 return (tag[0], tag[1])
 
-    raise Exception("Could not extract runtime tag")
+    raise Exception(f"Could not extract docker tag with search string: {search_str}")
 
 
-def extract_searxng_version() -> str:
-    with open(PROJECT_ROOT / "searxng" / "searx" / "version_frozen.py", "r") as f:
-        for line in f.read().splitlines():
-            if "VERSION_STRING" in line:
-                return line.split('"')[1]
+def extract_lwa_tag() -> tuple[str, str]:
+    return extract_docker_tag("aws-lambda-adapter")
 
-    raise Exception("Could not extract searxng version")
+
+def extract_searxng_tag() -> tuple[str, str]:
+    return extract_docker_tag("searxng/searxng")
 
 
 def get_git_tags() -> list[Version]:
@@ -99,8 +98,9 @@ if __name__ == "__main__":
 
             print(f"{ENV_PREFIX}_NEXT_VERSION={str(next_version)}")
 
-    runtime_image, runtime_tag = extract_runtime_tag()
-    print(f"{ENV_PREFIX}_RUNTIME_IMAGE={runtime_image}")
-    print(f"{ENV_PREFIX}_RUNTIME_TAG={runtime_tag}")
-    print(f"{ENV_PREFIX}_APP_IMAGE=searxng/searxng")
-    print(f"{ENV_PREFIX}_APP_VERSION={extract_searxng_version()}")
+    searxng_image, searxng_tag = extract_searxng_tag()
+    lwa_image, lwa_tag = extract_lwa_tag()
+    print(f"{ENV_PREFIX}_LWA_IMAGE={lwa_image}")
+    print(f"{ENV_PREFIX}_LWA_TAG={lwa_tag}")
+    print(f"{ENV_PREFIX}_APP_IMAGE={searxng_image}")
+    print(f"{ENV_PREFIX}_APP_TAG={searxng_tag}")
