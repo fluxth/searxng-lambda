@@ -15,4 +15,4 @@ ENV AWS_LWA_READINESS_CHECK_PORT=7000
 ENV AWS_LWA_READINESS_CHECK_PATH=/healthz
 
 ENTRYPOINT ["/lambda-entrypoint.sh"]
-CMD ["/sbin/tini", "--", "/usr/local/searxng/dockerfiles/docker-entrypoint.sh"]
+CMD ["/usr/local/searxng/dockerfiles/docker-entrypoint.sh"]
