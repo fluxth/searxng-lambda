@@ -42,14 +42,24 @@ jobs:
           push: false
           load: true
 
+      - name: Start test containers
+        run: cd tests && docker-compose up -d
+
+      - name: Wait for local lambda to start
+        run: |
+          if [[ "$(curl --retry 3 --retry-all-errors http://localhost:8070/healthz)" == "OK" ]] ; then
+            echo "Lambda healthcheck OK"
+          else
+            cd tests
+            docker-compose logs || true
+            exit 1
+          fi
+
       - name: Setup Node JS
         uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
         with:
           cache: npm
           cache-dependency-path: tests/package-lock.json
-
-      - name: Start test containers
-        run: cd tests && docker-compose up -d
 
       - name: Install NPM packages
         run: cd tests && npm ci
