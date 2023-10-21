@@ -1,42 +1,18 @@
-FROM public.ecr.aws/lambda/python:3.11.2023.10.20.00@sha256:f5fb20db0dcd01c36aaa4ab53fe035eecc2a6efc7e7c22d8d5d0cd85de117d5c AS base
+FROM public.ecr.aws/awsguru/aws-lambda-adapter:0.7.1@sha256:97c8f81e19e64841df0882d3b3c943db964c554992c1bac26100f1d6c41ea0bb AS adapter
+FROM public.ecr.aws/lambda/provided:al2.2023.10.20.00@sha256:d3a1468b44ede33f5b19ffd39fa59b7d4829b665ae69851ebf7d6d21898352aa AS rie
 
-RUN yum install -y libxml2 libxslt && \
-    yum clean all && \
-    rm -rf /var/cache/yum
+FROM searxng/searxng:2023.10.20-01b5b9cb8@sha256:73ffd1a6bec793505f57c8bdecce0821f52cad275edf02ad6ebf37b558635d2a AS searxng
 
-FROM base AS build
-WORKDIR /tmp/workdir
+COPY --from=adapter /lambda-adapter /opt/extensions/lambda-adapter
+COPY --from=rie /usr/local/bin/aws-lambda-rie /usr/local/bin/aws-lambda-rie
+COPY lambda-entrypoint.sh /lambda-entrypoint.sh
+COPY settings.yml /etc/searxng/settings.yml
 
-RUN yum install -y gcc libxml2-devel libxslt-devel patch
+ENV BIND_ADDRESS=127.0.0.1:7000
 
-COPY searxng/requirements.txt .
-COPY requirements.txt ./requirements.lambda.txt
+ENV AWS_LWA_PORT=7000
+ENV AWS_LWA_READINESS_CHECK_PORT=7000
+ENV AWS_LWA_READINESS_CHECK_PATH=/healthz
 
-RUN echo >> requirements.txt && \
-    sed -i 's/pytomlpp.*//' requirements.txt
-
-RUN cat requirements.txt requirements.lambda.txt > requirements.all.txt && \
-    pip3 install -r requirements.all.txt --target "${LAMBDA_TASK_ROOT}"
-
-COPY searxng/searx ${LAMBDA_TASK_ROOT}/searx
-COPY main.py ${LAMBDA_TASK_ROOT}
-COPY patches patches
-
-RUN cd ${LAMBDA_TASK_ROOT} && \
-    cat /tmp/workdir/patches/*.patch | patch -p1 && \
-    python3 -m compileall searx main.py
-
-COPY settings.yml ${LAMBDA_TASK_ROOT}
-
-FROM base AS runtime
-
-ENV INSTANCE_NAME=searxng \
-    AUTOCOMPLETE= \
-    BASE_URL= \
-    MORTY_KEY= \
-    MORTY_URL= \
-    SEARXNG_SETTINGS_PATH=${LAMBDA_TASK_ROOT}/settings.yml
-
-COPY --from=build ${LAMBDA_TASK_ROOT} ${LAMBDA_TASK_ROOT}
-
-CMD ["main.lambda_handler"]
+ENTRYPOINT ["/lambda-entrypoint.sh"]
+CMD ["/sbin/tini", "--", "/usr/local/searxng/dockerfiles/docker-entrypoint.sh"]
