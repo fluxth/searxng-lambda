@@ -1,7 +1,7 @@
-diff --git a/searx/tools/config.py b/searx/tools/config.py
+diff --git a/searx/botdetection/config.py b/searx/botdetection/config.py
 index d2710456..65998083 100644
---- a/searx/tools/config.py
-+++ b/searx/tools/config.py
+--- a/searx/botdetection/config.py
++++ b/searx/botdetection/config.py
 @@ -14,7 +14,7 @@ import copy
  import typing
  import logging
