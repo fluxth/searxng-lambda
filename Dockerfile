@@ -1,13 +1,13 @@
-FROM public.ecr.aws/lambda/python:3.11.2023.11.08.12@sha256:dda912d8305f078150234ce9e3a2cbbf4d49cf6122d06612a94c863617d3f91c AS base
+FROM public.ecr.aws/lambda/python:3.12.2023.11.12.08@sha256:665d8f761e6d22a49df0cc4ee0cdb3593f51927e7604541c7b7ea20160dc9d5e AS base
 
-RUN yum install -y libxml2 libxslt && \
-    yum clean all && \
-    rm -rf /var/cache/yum
+RUN dnf install -y libxml2 libxslt && \
+    dnf clean all && \
+    rm -rf /var/cache/dnf
 
 FROM base AS build
 WORKDIR /tmp/workdir
 
-RUN yum install -y gcc libxml2-devel libxslt-devel patch
+RUN dnf install -y gcc gcc-c++ libxml2-devel libxslt-devel patch
 
 COPY searxng/requirements.txt .
 COPY requirements.txt ./requirements.lambda.txt
