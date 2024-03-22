@@ -1,2 +1,2 @@
-asgiref==3.8.0
+asgiref==3.8.1
 mangum==0.17.0
