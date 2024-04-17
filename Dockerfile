@@ -1,4 +1,4 @@
-FROM public.ecr.aws/lambda/python:3.12.2024.04.17.11@sha256:69236c19936480cccfcabeaa2eb2ee3a5d2b40646154b6ed031e8dd431298954 AS base
+FROM public.ecr.aws/lambda/python:3.12.2024.04.17.17@sha256:3df8dcffd27efbaa191051cd2247e07e4a86aac394c6644e717cda3ca407f212 AS base
 
 RUN dnf install -y libxml2 libxslt && \
     dnf clean all && \
