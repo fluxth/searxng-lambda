@@ -16,11 +16,7 @@
   },
   "reviewers": ["fluxth"],
   "timezone": "Asia/Tokyo",
-  "schedule": [
-    "after 7pm every weekday",
-    "before 7am every weekday",
-    "every weekend"
-  ],
+  "schedule": ["before 7am"],
   "ignorePaths": [
     "**/node_modules/**",
     "searxng/**"
